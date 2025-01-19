@@ -80,9 +80,9 @@ func writeGadgetConfig() error {
 	}
 
 	err = writeGadgetAttrs(kvmGadgetPath, [][]string{
-		{"bcdUSB", "0x0200"},   //USB 2.0
-		{"idVendor", "0x1d6b"}, //The Linux Foundation
-		{"idProduct", "0104"},  //Multifunction Composite Gadget¬
+		{"bcdUSB", "0x0200"},    //USB 2.0
+		{"idVendor", "0x046d"},  //Logitech
+		{"idProduct", "0xc52b"}, //Logitech, Inc. Unifying Receiver
 		{"bcdDevice", "0100"},
 	})
 	if err != nil {
@@ -96,9 +96,9 @@ func writeGadgetConfig() error {
 	}
 
 	err = writeGadgetAttrs(gadgetStringsPath, [][]string{
-		{"serialnumber", GetDeviceID()},
-		{"manufacturer", "JetKVM"},
-		{"product", "JetKVM USB Emulation Device"},
+		{"serialnumber", "6&4420B4E&0&1"}, //Logitech Serial
+		{"manufacturer", "(Standard USB Host Controller)"},
+		{"product", "USB Composite Device"},
 	})
 	if err != nil {
 		return err
