@@ -478,6 +478,10 @@ func rpcSetUsbEmulationState(enabled bool) error {
 	}
 }
 
+func rpcSetUsbConfig(usbConfig UsbConfig) {
+	log.Printf("[jsonrpc.go:rpcSetUsbConfig] usb config set to %s", usbConfig)
+}
+
 func rpcGetWakeOnLanDevices() ([]WakeOnLanDevice, error) {
 	LoadConfig()
 	if config.WakeOnLanDevices == nil {
@@ -542,6 +546,7 @@ var rpcHandlers = map[string]RPCHandler{
 	"isUpdatePending":        {Func: rpcIsUpdatePending},
 	"getUsbEmulationState":   {Func: rpcGetUsbEmulationState},
 	"setUsbEmulationState":   {Func: rpcSetUsbEmulationState, Params: []string{"enabled"}},
+	"setUsbConfig":           {Func: rpcSetUsbConfig, Params: []string{"usbConfig"}},
 	"checkMountUrl":          {Func: rpcCheckMountUrl, Params: []string{"url"}},
 	"getVirtualMediaState":   {Func: rpcGetVirtualMediaState},
 	"getStorageSpace":        {Func: rpcGetStorageSpace},

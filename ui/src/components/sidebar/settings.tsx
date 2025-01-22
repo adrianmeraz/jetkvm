@@ -880,16 +880,16 @@ export default function SettingsSidebar() {
             {settings.developerMode && (
               <div className="space-y-4">
                 <InputFieldWithLabel
+                    label="USB Vendor Id"
+                    value={usbConfig.usb_vendor_id || ""}
+                    onChange={e => handleUsbVendorIdChange(e.target.value)}
+                    placeholder="Enter USB Vendor Id"
+                />
+                <InputFieldWithLabel
                   label="USB Product Id"
                   value={usbConfig.usb_product_id || ""}
                   onChange={e => handleUsbProductIdChange(e.target.value)}
                   placeholder="Enter USB Product Id"
-                />
-                <InputFieldWithLabel
-                  label="USB Vendor Id"
-                  value={usbConfig.usb_vendor_id || ""}
-                  onChange={e => handleUsbVendorIdChange(e.target.value)}
-                  placeholder="Enter USB Vendor Id"
                 />
                 <InputFieldWithLabel
                   label="USB Serial Number"
