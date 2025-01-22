@@ -63,7 +63,7 @@ func initUsbConfig(checkPath bool) {
 }
 
 func WriteUsbConfig() {
-
+	initUsbConfig(false)
 }
 
 func writeGadgetAttrs(basePath string, attrs [][]string) error {
@@ -87,10 +87,11 @@ func writeGadgetConfig() error {
 		return err
 	}
 
+	LoadConfig()
 	err = writeGadgetAttrs(kvmGadgetPath, [][]string{
-		{"bcdUSB", "0x0200"},    //USB 2.0
-		{"idVendor", "0x046d"},  //Logitech
-		{"idProduct", "0xc52b"}, //Logitech, Inc. Unifying Receiver
+		{"bcdUSB", "0x0200"},                         //USB 2.0
+		{"idVendor", config.UsbConfig.UsbVendorId},   //Logitech
+		{"idProduct", config.UsbConfig.UsbProductId}, //Logitech, Inc. Unifying Receiver
 		{"bcdDevice", "0100"},
 	})
 	if err != nil {
@@ -104,8 +105,8 @@ func writeGadgetConfig() error {
 	}
 
 	err = writeGadgetAttrs(gadgetStringsPath, [][]string{
-		{"serialnumber", "6&4420B4E&0&1"}, //Logitech Serial
-		{"manufacturer", "(Standard USB Host Controller)"},
+		{"serialnumber", config.UsbConfig.UsbSerialNumber},
+		{"manufacturer", config.UsbConfig.UsbManufacturer},
 		{"product", "USB Composite Device"},
 	})
 	if err != nil {

@@ -484,6 +484,7 @@ func rpcSetUsbConfig(usbConfig UsbConfig) error {
 	if err := SaveConfig(); err != nil {
 		return fmt.Errorf("failed to save usb config: %w", err)
 	}
+	WriteUsbConfig()
 	log.Printf("[jsonrpc.go:rpcSetUsbConfig] usb config set to %s", usbConfig)
 	return nil
 }
