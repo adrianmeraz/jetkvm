@@ -34,6 +34,10 @@ func mountConfigFS() error {
 }
 
 func init() {
+	initUsbConfig(true)
+}
+
+func initUsbConfig(checkPath bool) {
 	_ = os.MkdirAll(imagesFolder, 0755)
 	udcs := gadget.GetUdcs()
 	if len(udcs) < 1 {
@@ -42,7 +46,7 @@ func init() {
 	}
 	udc = udcs[0]
 	_, err := os.Stat(kvmGadgetPath)
-	if err == nil {
+	if checkPath && err == nil {
 		logger.Info("usb gadget already exists, skipping usb gadget initialization")
 		return
 	}
@@ -56,6 +60,10 @@ func init() {
 	}
 
 	//TODO: read hid reports(capslock, numlock, etc) from keyboardHidFile
+}
+
+func WriteUsbConfig() {
+
 }
 
 func writeGadgetAttrs(basePath string, attrs [][]string) error {

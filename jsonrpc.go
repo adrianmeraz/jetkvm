@@ -478,8 +478,14 @@ func rpcSetUsbEmulationState(enabled bool) error {
 	}
 }
 
-func rpcSetUsbConfig(usbConfig UsbConfig) {
+func rpcSetUsbConfig(usbConfig UsbConfig) error {
+	LoadConfig()
+	config.UsbConfig = usbConfig
+	if err := SaveConfig(); err != nil {
+		return fmt.Errorf("failed to save usb config: %w", err)
+	}
 	log.Printf("[jsonrpc.go:rpcSetUsbConfig] usb config set to %s", usbConfig)
+	return nil
 }
 
 func rpcGetWakeOnLanDevices() ([]WakeOnLanDevice, error) {
