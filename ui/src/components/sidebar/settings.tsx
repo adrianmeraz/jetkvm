@@ -10,6 +10,7 @@ import { Button, LinkButton } from "@components/Button";
 import { TextAreaWithLabel } from "@components/TextArea";
 import { SectionHeader } from "@components/SectionHeader";
 import { GridCard } from "@components/Card";
+import { InputFieldWithLabel } from "@components/InputField";
 import { CheckCircleIcon } from "@heroicons/react/20/solid";
 import { cx } from "@/cva.config";
 import React, { useCallback, useEffect, useRef, useState } from "react";
@@ -102,6 +103,11 @@ export default function SettingsSidebar() {
   } | null>(null);
 
   const [usbEmulationEnabled, setUsbEmulationEnabled] = useState(false);
+  const [usbProductId, setUsbProductId] = useState<string | null>(null);
+  const [usbVendorId, setUsbVendorId] = useState<string | null>(null);
+  const [usbSerialNumber, setUsbSerialNumber] = useState<string | null>(null);
+  const [usbName, setUsbName] = useState<string | null>(null);
+  const [usbManufacturer, setUsbManufacturer] = useState<string | null>(null);
   const getUsbEmulationState = useCallback(() => {
     send("getUsbEmulationState", {}, resp => {
       if ("error" in resp) return;
@@ -239,6 +245,26 @@ export default function SettingsSidebar() {
       notifications.success("SSH key updated successfully");
     });
   }, [send, sshKey]);
+
+  const handleUsbProductIdChange = (productId: string) => {
+    setUsbProductId(productId);
+  };
+
+  const handleUsbVendorIdChange = (vendorId: string) => {
+    setUsbVendorId(vendorId);
+  };
+
+  const handleUsbSerialChange = (serialNumber: string) => {
+    setUsbSerialNumber(serialNumber);
+  };
+
+  const handleUsbName = (name: string) => {
+    setUsbName(name);
+  };
+
+  const handleUsbManufacturer = (manufacturer: string) => {
+    setUsbManufacturer(manufacturer);
+  };
 
   const { setIsUpdateDialogOpen, setModalView, otaState } = useUpdateStore();
   const handleCheckForUpdates = () => {
@@ -832,6 +858,67 @@ export default function SettingsSidebar() {
                     theme="primary"
                     text="Update SSH Key"
                     onClick={handleUpdateSSHKey}
+                  />
+                </div>
+              </div>
+            )}
+            {settings.developerMode && (
+              <div className="space-y-4">
+                <InputFieldWithLabel
+                  label="USB Product Id"
+                  value={usbProductId || ""}
+                  onChange={e => handleUsbProductIdChange(e.target.value)}
+                  placeholder="Enter USB Product Id"
+                />
+                <InputFieldWithLabel
+                  label="USB Vendor Id"
+                  value={usbVendorId || ""}
+                  onChange={e => handleUsbVendorIdChange(e.target.value)}
+                  placeholder="Enter USB Vendor Id"
+                />
+                <InputFieldWithLabel
+                  label="USB Serial Number"
+                  value={usbSerialNumber || ""}
+                  onChange={e => handleUsbSerialChange(e.target.value)}
+                  placeholder="Enter USB Serial Number"
+                />
+                <InputFieldWithLabel
+                  label="USB Name"
+                  value={usbName || ""}
+                  onChange={e => handleUsbName(e.target.value)}
+                  placeholder="Enter USB Name"
+                />
+                <InputFieldWithLabel
+                  label="USB Manufacturer"
+                  value={usbManufacturer || ""}
+                  onChange={e => handleUsbManufacturer(e.target.value)}
+                  placeholder="Enter USB Manufacturer"
+                />
+                <div className="flex items-center gap-x-2">
+                  <Button
+                    size="SM"
+                    theme="primary"
+                    text="Update USB Config"
+                    onClick={() => {
+                      const configVals = [
+                        usbProductId,
+                        usbVendorId,
+                        usbSerialNumber,
+                        usbName,
+                        usbManufacturer
+                      ];
+                      if (configVals.every(function(i) { return Boolean(i); })) {
+                        notifications.success(`
+                          usbProductId: ${usbProductId},
+                          usbVendorId: ${usbVendorId},
+                          usbSerialNumber: ${usbSerialNumber},
+                          usbName: ${usbName},
+                          usbManufacturer: ${usbManufacturer},
+                        `)
+                      } else {
+                        notifications.error("Failed to update USB config");
+                      }
+                    }}
                   />
                 </div>
               </div>
