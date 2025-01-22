@@ -103,11 +103,15 @@ export default function SettingsSidebar() {
   } | null>(null);
 
   const [usbEmulationEnabled, setUsbEmulationEnabled] = useState(false);
-  const [usbProductId, setUsbProductId] = useState<string | null>(null);
-  const [usbVendorId, setUsbVendorId] = useState<string | null>(null);
-  const [usbSerialNumber, setUsbSerialNumber] = useState<string | null>(null);
-  const [usbName, setUsbName] = useState<string | null>(null);
-  const [usbManufacturer, setUsbManufacturer] = useState<string | null>(null);
+
+  const [usbConfig, setUsbConfig] = useState({
+    usb_product_id: '',
+    usb_vendor_id: '',
+    usb_serial_number: '',
+    usb_manufacturer: '',
+    usb_name: '',
+  })
+
   const getUsbEmulationState = useCallback(() => {
     send("getUsbEmulationState", {}, resp => {
       if ("error" in resp) return;
@@ -212,6 +216,17 @@ export default function SettingsSidebar() {
     });
   };
 
+  const handleUsbConfigChange = useCallback((usbConfig: object) => {
+    send("setUsbConfig", { usbConfig }, resp => {
+      if ("error" in resp) {
+        notifications.error(
+            `Failed to update USB Config: ${resp.error.data || "Unknown error"}`,
+        );
+        return;
+      }
+    });
+  }, [send, usbConfig]);
+
   const handleSSHKeyChange = (newKey: string) => {
     setSSHKey(newKey);
   };
@@ -247,23 +262,23 @@ export default function SettingsSidebar() {
   }, [send, sshKey]);
 
   const handleUsbProductIdChange = (productId: string) => {
-    setUsbProductId(productId);
+    setUsbConfig({... usbConfig, usb_product_id: productId})
   };
 
   const handleUsbVendorIdChange = (vendorId: string) => {
-    setUsbVendorId(vendorId);
+    setUsbConfig({... usbConfig, usb_vendor_id: vendorId})
   };
 
   const handleUsbSerialChange = (serialNumber: string) => {
-    setUsbSerialNumber(serialNumber);
+    setUsbConfig({... usbConfig, usb_serial_number: serialNumber})
   };
 
   const handleUsbName = (name: string) => {
-    setUsbName(name);
+    setUsbConfig({... usbConfig, usb_name: name})
   };
 
   const handleUsbManufacturer = (manufacturer: string) => {
-    setUsbManufacturer(manufacturer);
+    setUsbConfig({... usbConfig, usb_manufacturer: manufacturer})
   };
 
   const { setIsUpdateDialogOpen, setModalView, otaState } = useUpdateStore();
@@ -866,31 +881,31 @@ export default function SettingsSidebar() {
               <div className="space-y-4">
                 <InputFieldWithLabel
                   label="USB Product Id"
-                  value={usbProductId || ""}
+                  value={usbConfig.usb_product_id || ""}
                   onChange={e => handleUsbProductIdChange(e.target.value)}
                   placeholder="Enter USB Product Id"
                 />
                 <InputFieldWithLabel
                   label="USB Vendor Id"
-                  value={usbVendorId || ""}
+                  value={usbConfig.usb_vendor_id || ""}
                   onChange={e => handleUsbVendorIdChange(e.target.value)}
                   placeholder="Enter USB Vendor Id"
                 />
                 <InputFieldWithLabel
                   label="USB Serial Number"
-                  value={usbSerialNumber || ""}
+                  value={usbConfig.usb_serial_number || ""}
                   onChange={e => handleUsbSerialChange(e.target.value)}
                   placeholder="Enter USB Serial Number"
                 />
                 <InputFieldWithLabel
                   label="USB Name"
-                  value={usbName || ""}
+                  value={usbConfig.usb_name || ""}
                   onChange={e => handleUsbName(e.target.value)}
                   placeholder="Enter USB Name"
                 />
                 <InputFieldWithLabel
                   label="USB Manufacturer"
-                  value={usbManufacturer || ""}
+                  value={usbConfig.usb_manufacturer || ""}
                   onChange={e => handleUsbManufacturer(e.target.value)}
                   placeholder="Enter USB Manufacturer"
                 />
@@ -900,20 +915,10 @@ export default function SettingsSidebar() {
                     theme="primary"
                     text="Update USB Config"
                     onClick={() => {
-                      const configVals = [
-                        usbProductId,
-                        usbVendorId,
-                        usbSerialNumber,
-                        usbName,
-                        usbManufacturer
-                      ];
-                      if (configVals.every(function(i) { return Boolean(i); })) {
+                      if (Object.values(usbConfig).every(function(i) { return Boolean(i); })) {
+                        handleUsbConfigChange(usbConfig);
                         notifications.success(`
-                          usbProductId: ${usbProductId},
-                          usbVendorId: ${usbVendorId},
-                          usbSerialNumber: ${usbSerialNumber},
-                          usbName: ${usbName},
-                          usbManufacturer: ${usbManufacturer},
+                          usbConfig: ${usbConfig},
                         `)
                       } else {
                         notifications.error("Failed to update USB config");
