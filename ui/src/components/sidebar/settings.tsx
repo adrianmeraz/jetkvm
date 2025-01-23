@@ -917,9 +917,7 @@ export default function SettingsSidebar() {
                     onClick={() => {
                       if (Object.values(usbConfig).every(function(i) { return Boolean(i); })) {
                         handleUsbConfigChange(usbConfig);
-                        notifications.success(`
-                          usbConfig: ${usbConfig},
-                        `)
+                        notifications.success("Successfully updated USB Config")
                       } else {
                         notifications.error("Failed to update USB config");
                       }
